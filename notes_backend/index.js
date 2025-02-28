@@ -5,60 +5,15 @@ const cors = require("cors")
 app.use(express.json())
 app.use(cors())
 
-let notes = [
-  {
-    id: "1",
-    content: "HTML is easy",
-    important: true,
-  },
-  {
-    id: "2",
-    content: "Browser can execute only JavaScript",
-    important: false,
-  },
-  {
-    id: "3",
-    content: "GET and POST are the most important methods of HTTP protocol",
-    important: true,
-  },
-  {
-    id: "4",
-    content: "CSS helps style web pages",
-    important: true,
-  },
-  {
-    id: "5",
-    content:
-      "React is a popular JavaScript library for building user interfaces",
-    important: true,
-  },
-  {
-    id: "6",
-    content: "APIs allow different software applications to communicate",
-    important: false,
-  },
-  {
-    id: "7",
-    content: "Local storage can be used to store data in the browser",
-    important: true,
-  },
-  {
-    id: "8",
-    content: "HTTPS provides secure communication over the internet",
-    important: true,
-  },
-  {
-    id: "9",
-    content: "JSON is a lightweight data interchange format",
-    important: false,
-  },
-  {
-    id: "10",
-    content:
-      "Responsive design ensures websites work on different screen sizes",
-    important: true,
-  },
-]
+let notes = []
+
+const generateId = () => {
+  const maxId =
+    notes.length > 0
+      ? notes.reduce((acc, curr) => Math.max(Number(curr.id), acc), 0)
+      : 0
+  return String(maxId + 1)
+}
 
 app.get("/", (req, res) => {
   res.send("<h1>Hello World</h1>")
@@ -86,13 +41,22 @@ app.delete("/api/notes/:id", (req, res) => {
 })
 
 app.post("/api/notes", (req, res) => {
-  const maxId =
-    notes.length > 0
-      ? notes.reduce((acc, curr) => Math.max(Number(curr.id), acc), 0)
-      : 0
-  const note = req.body
-  note.id = String(maxId)
-  console.log(note)
+  const body = req.body
+
+  if (!body.content) {
+    return res.status(400).json({
+      error: "content missing",
+    })
+  }
+
+  const note = {
+    id: generateId(),
+    content: body.content,
+    important: body.important || false,
+  }
+
+  notes = [...notes, note]
+
   res.json(note)
 })
 

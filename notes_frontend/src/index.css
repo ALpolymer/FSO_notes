@@ -49,6 +49,10 @@ h6 {
   overflow-wrap: break-word;
 }
 
+body {
+  padding: 0.5rem;
+}
+
 h1 {
   color: green;
 }
