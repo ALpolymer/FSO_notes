@@ -5,7 +5,34 @@ const cors = require("cors")
 app.use(express.json())
 app.use(cors())
 
-let notes = []
+let notes = [
+  {
+    id: "1",
+    content: "GET and POST are the most important methods of HTTP protocol",
+    important: false,
+  },
+  {
+    id: "2",
+    content: "Express makes it easy to create REST APIs",
+    important: true,
+  },
+  {
+    id: "3",
+    content: "CORS is needed for allowing cross-origin requests",
+    important: true,
+  },
+  {
+    id: "4",
+    content: "Environment variables can be accessed through process.env",
+    important: false,
+  },
+  {
+    id: "5",
+    content:
+      "Middleware functions have access to the request and response objects",
+    important: true,
+  },
+]
 
 const generateId = () => {
   const maxId =
