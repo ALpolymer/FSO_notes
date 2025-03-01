@@ -15,6 +15,14 @@ const generateId = () => {
   return String(maxId + 1)
 }
 
+const checkNoteExists = (id) => {
+  return notes.some((n) => n.id === id)
+}
+
+const toggleImportantNotes = (id) => {
+  return notes.map((n) => (n.id === id ? { ...n, important: !n.important } : n))
+}
+
 app.get("/", (req, res) => {
   res.send("<h1>Hello World</h1>")
 })
@@ -25,6 +33,7 @@ app.get("/api/notes", (req, res) => {
 
 app.get("/api/notes/:id", (req, res) => {
   const id = req.params.id
+
   const note = notes.find((note) => note.id === id)
   if (note) {
     res.json(note)
@@ -58,6 +67,20 @@ app.post("/api/notes", (req, res) => {
   notes = [...notes, note]
 
   res.json(note)
+})
+
+app.put("/api/notes/:id", (req, res) => {
+  const id = req.params.id
+
+  const exists = checkNoteExists(id)
+  if (!exists) {
+    return res.status(404).json({ error: `Note with id: ${id} not found` })
+  }
+  notes = toggleImportantNotes(id)
+
+  const updatedNote = notes.find((note) => note.id === id)
+
+  res.json(updatedNote)
 })
 
 const PORT = 3001
