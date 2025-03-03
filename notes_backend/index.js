@@ -32,6 +32,12 @@ let notes = [
       "Middleware functions have access to the request and response objects",
     important: true,
   },
+  {
+    id: "6",
+    content:
+      "Middleware functions have access to the request and response objects",
+    important: true,
+  },
 ]
 
 const generateId = () => {
