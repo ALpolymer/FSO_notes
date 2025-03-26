@@ -5,30 +5,30 @@ const url = process.env.MONGODB_URI
 
 console.log("connecting to", url)
 
-// const url = `mongodb+srv://alpolymer:${password}@cluster0.gor7j.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0`
+console.log(url)
 
-mongoose
-  .connect(url)
-  .then((result) => {
-    console.log("connected to MongoB")
-  })
-  .catch((error) => {
-    console.log("error connecting to MongoDB:", error.message)
-  })
+// mongoose
+//   .connect(url)
+//   .then((result) => {
+//     console.log("connected to MongoB")
+//   })
+//   .catch((error) => {
+//     console.log("error connecting to MongoDB:", error.message)
+//   })
 
-const noteSchema = new mongoose.Schema({
-  content: String,
-  important: Boolean,
-})
+// const noteSchema = new mongoose.Schema({
+//   content: String,
+//   important: Boolean,
+// })
 
-noteSchema.set("toJSON", {
-  transform: (document, returnedObject) => {
-    returnedObject.id = returnedObject._id.toString()
-    delete returnedObject._id
-    delete returnedObject.__v
-  },
-})
+// noteSchema.set("toJSON", {
+//   transform: (document, returnedObject) => {
+//     returnedObject.id = returnedObject._id.toString()
+//     delete returnedObject._id
+//     delete returnedObject.__v
+//   },
+// })
 
-const Note = mongoose.model("Note", noteSchema)
+// const Note = mongoose.model("Note", noteSchema)
 
-module.exports = mongoose.model("Note", noteSchema)
+// module.exports = mongoose.model("Note", noteSchema)
