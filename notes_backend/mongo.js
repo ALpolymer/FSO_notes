@@ -25,13 +25,13 @@ Note.find({}).then((res) => {
   mongoose.connection.close()
 })
 
-// const note = new Note({
-//   content: "Mongoose makes things easy",
-//   important: true,
-// })
+const note = new Note({
+  content: "Mongoose makes things easy",
+  important: true,
+})
 
-// //Save note to db
-// note.save().then((result) => {
-//   console.log("note saved!")
-//   mongoose.connection.close()
-// })
+//Save note to db
+note.save().then((result) => {
+  console.log("note saved!")
+  mongoose.connection.close()
+})
