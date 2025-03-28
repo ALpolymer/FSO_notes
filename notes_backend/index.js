@@ -42,14 +42,6 @@ let notes = [
   },
 ]
 
-const generateId = () => {
-  const maxId =
-    notes.length > 0
-      ? notes.reduce((acc, curr) => Math.max(Number(curr.id), acc), 0)
-      : 0
-  return String(maxId + 1)
-}
-
 const checkNoteExists = (id) => {
   return notes.some((n) => n.id === id)
 }
@@ -69,14 +61,9 @@ app.get("/api/notes", (req, res) => {
 })
 
 app.get("/api/notes/:id", (req, res) => {
-  const id = req.params.id
-
-  const note = notes.find((note) => note.id === id)
-  if (note) {
+  Note.findById(req.params.id).then((note) => {
     res.json(note)
-  } else {
-    res.status(404).end()
-  }
+  })
 })
 
 app.delete("/api/notes/:id", (req, res) => {
@@ -89,21 +76,14 @@ app.delete("/api/notes/:id", (req, res) => {
 app.post("/api/notes", (req, res) => {
   const body = req.body
 
-  if (!body.content) {
-    return res.status(400).json({
-      error: "content missing",
-    })
-  }
-
-  const note = {
-    id: generateId(),
+  const note = new Note({
     content: body.content,
     important: body.important || false,
-  }
+  })
 
-  notes = [...notes, note]
-
-  res.json(note)
+  note.save().then((savedNote) => {
+    res.json(savedNote)
+  })
 })
 
 app.put("/api/notes/:id", (req, res) => {
