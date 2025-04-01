@@ -54,16 +54,28 @@ app.get("/", (req, res) => {
   res.send("<h1>Hello World</h1>")
 })
 
+/**
+ * DB GET ALL NOTES
+ */
 app.get("/api/notes", (req, res) => {
   Note.find({}).then((notes) => {
     res.json(notes)
   })
 })
 
+/**
+ * DB GET ONE NOTE
+ */
 app.get("/api/notes/:id", (req, res) => {
-  Note.findById(req.params.id).then((note) => {
-    res.json(note)
-  })
+  Note.findById(req.params.id)
+    .then((note) => {
+      if (note) {
+        res.json(note)
+      } else {
+        res.status(404).end()
+      }
+    })
+    .catch((err) => next(err))
 })
 
 app.delete("/api/notes/:id", (req, res) => {
@@ -73,6 +85,9 @@ app.delete("/api/notes/:id", (req, res) => {
   res.status(204).end()
 })
 
+/**
+ * DB POST NOTE
+ */
 app.post("/api/notes", (req, res) => {
   const body = req.body
 
@@ -99,6 +114,18 @@ app.put("/api/notes/:id", (req, res) => {
 
   res.json(updatedNote)
 })
+
+const errorHandler = (err, req, res, next) => {
+  console.error(err.message)
+
+  if (err.name === "CastError") {
+    return res.status(400).send({ error: "malformatted id" })
+  }
+
+  next(err)
+}
+
+app.use(errorHandler)
 
 const PORT = process.env.PORT || 3001
 app.listen(PORT)
