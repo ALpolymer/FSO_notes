@@ -1,9 +1,29 @@
 const express = require("express")
 const Note = require("./models/note")
+
 const app = express()
 
-app.use(express.static("dist"))
-app.use(express.json())
+/*
+ * Request Logger
+ */
+const requestLogger = (req, res, next) => {
+  console.log("Method:", req.method)
+  console.log("Path:", req.path)
+  console.log("Body:", req.body)
+  next()
+}
+
+/*
+ * Error Middleware
+ */
+const errorHandler = (err, req, res, next) => {
+  console.error(err.message)
+
+  if (err.name === "CastError") {
+    return res.status(400).send({ error: "malformatted id" })
+  }
+  next(err)
+}
 
 let notes = [
   {
@@ -47,6 +67,10 @@ const checkNoteExists = (id) => {
 const toggleImportantNotes = (id) => {
   return notes.map((n) => (n.id === id ? { ...n, important: !n.important } : n))
 }
+
+app.use(express.static("dist"))
+app.use(express.json())
+app.use(requestLogger)
 
 app.get("/", (req, res) => {
   res.send("<h1>Hello World</h1>")
@@ -113,19 +137,11 @@ app.put("/api/notes/:id", (req, res) => {
   res.json(updatedNote)
 })
 
-/*
- * Error Middleware
- */
-const errorHandler = (err, req, res, next) => {
-  console.error(err.message)
-
-  if (err.name === "CastError") {
-    return res.status(400).send({ error: "malformatted id" })
-  }
-
-  next(err)
+const unknownEndpoint = (req, res) => {
+  res.status(404).send({ error: "unknown endpoint" })
 }
 
+app.use(unknownEndpoint)
 app.use(errorHandler)
 
 const PORT = process.env.PORT || 3001
