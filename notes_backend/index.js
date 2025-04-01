@@ -1,11 +1,9 @@
 const express = require("express")
-const app = express()
-const cors = require("cors")
 const Note = require("./models/note")
+const app = express()
 
-app.use(express.json())
 app.use(express.static("dist"))
-app.use(cors())
+app.use(express.json())
 
 let notes = [
   {
@@ -54,7 +52,7 @@ app.get("/", (req, res) => {
   res.send("<h1>Hello World</h1>")
 })
 
-/**
+/*
  * DB GET ALL NOTES
  */
 app.get("/api/notes", (req, res) => {
@@ -63,10 +61,10 @@ app.get("/api/notes", (req, res) => {
   })
 })
 
-/**
+/*
  * DB GET ONE NOTE
  */
-app.get("/api/notes/:id", (req, res) => {
+app.get("/api/notes/:id", (req, res, next) => {
   Note.findById(req.params.id)
     .then((note) => {
       if (note) {
@@ -85,7 +83,7 @@ app.delete("/api/notes/:id", (req, res) => {
   res.status(204).end()
 })
 
-/**
+/*
  * DB POST NOTE
  */
 app.post("/api/notes", (req, res) => {
@@ -115,6 +113,9 @@ app.put("/api/notes/:id", (req, res) => {
   res.json(updatedNote)
 })
 
+/*
+ * Error Middleware
+ */
 const errorHandler = (err, req, res, next) => {
   console.error(err.message)
 
