@@ -130,12 +130,15 @@ app.put("/api/notes/:id", (req, res) => {
   res.json(updatedNote)
 })
 
+/*
+ * DB DELETE NOTE
+ */
 app.delete("/api/notes/:id", (req, res, next) => {
   Note.findByIdAndDelete(req.params.id)
-    .then((res) => {
+    .then((result) => {
       res.status(204).end()
     })
-    .catch((err) => next(err))
+    .catch((error) => next(error))
 })
 
 const unknownEndpoint = (req, res) => {
