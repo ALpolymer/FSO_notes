@@ -100,13 +100,6 @@ app.get("/api/notes/:id", (req, res, next) => {
     .catch((err) => next(err))
 })
 
-app.delete("/api/notes/:id", (req, res) => {
-  const id = req.params.id
-  notes = notes.filter((note) => note.id !== id)
-
-  res.status(204).end()
-})
-
 /*
  * DB POST NOTE
  */
@@ -135,6 +128,14 @@ app.put("/api/notes/:id", (req, res) => {
   const updatedNote = notes.find((note) => note.id === id)
 
   res.json(updatedNote)
+})
+
+app.delete("/api/notes/:id", (req, res, next) => {
+  Note.findByIdAndDelete(req.params.id)
+    .then((res) => {
+      res.status(204).end()
+    })
+    .catch((err) => next(err))
 })
 
 const unknownEndpoint = (req, res) => {
