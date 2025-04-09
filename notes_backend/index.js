@@ -117,17 +117,21 @@ app.post("/api/notes", (req, res) => {
 })
 
 app.put("/api/notes/:id", (req, res) => {
-  const id = req.params.id
+  const { content, important } = req.body
 
-  const exists = checkNoteExists(id)
-  if (!exists) {
-    return res.status(404).json({ error: `Note with id: ${id} not found` })
-  }
-  notes = toggleImportantNotes(id)
+  Note.findById(req.params.id)
+    .then((note) => {
+      if (!note) {
+        return res.status(404).end()
+      }
+      note.content = content
+      note.important = important
 
-  const updatedNote = notes.find((note) => note.id === id)
-
-  res.json(updatedNote)
+      return note.save().then((updatedNote) => {
+        res.json(updatedNote)
+      })
+    })
+    .catch((err) => next(err))
 })
 
 /*
